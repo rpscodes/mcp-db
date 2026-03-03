@@ -14,10 +14,10 @@ interface Message {
 }
 
 const SUGGESTIONS = [
-  "What are the most common drone issues?",
-  "Show me product satisfaction ratings",
-  "Which drones have the most warranty claims?",
+  "What are the most common issues with the SkyVision Pro?",
+  "Show me component health across the ecosystem",
   "What features are customers requesting?",
+  "Which components have the worst resolution times?",
 ];
 
 export default function App() {
