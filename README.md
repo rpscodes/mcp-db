@@ -33,7 +33,7 @@ mcp-db/
 ├── test_setup.sh               # Verification script
 └── mcp-server/                 # MCP server implementation
     ├── src/
-    │   └── index.ts            # Main server code with 8 analysis tools
+    │   └── index.ts            # Main server code with 9 analysis tools
     ├── dist/                   # Compiled JavaScript (generated)
     ├── package.json
     ├── tsconfig.json
@@ -57,13 +57,13 @@ This system enables natural language conversations with Claude to gain insights 
 
 ### 1. PostgreSQL Database
 - **Database name**: `customer_support`
-- **Sample data**: 25 chat sessions, 15 customers, 10 products, ~100+ messages
+- **Sample data**: 25 chat sessions, 15 customers, 5 products (SkyVision Pro ecosystem), ~100+ messages
 - **Time period**: January-February 2024
 - **Categories**: Support, troubleshooting, complaint, feedback
 
 ### 2. MCP Server (TypeScript)
 - Built with `@modelcontextprotocol/sdk`
-- Provides 8 specialized tools for data analysis
+- Provides 9 specialized tools for data analysis
 - Connects to PostgreSQL via `pg` library
 - Runs as stdio server for Claude integration
 
@@ -134,19 +134,16 @@ Located at: `~/.config/claude/mcp_config.json`
 
 ## Sample Data Overview
 
-### Products (10)
+### Products (5 — SkyVision Pro Ecosystem)
 
-**Consumer Drones:**
-- SkyVision Pro (flagship, $1,200)
-- Scout Mini (beginner-friendly)
-- AeroMax 4K (prosumer)
+**Drone:**
+- SkyVision Pro (flagship drone, $1,200)
 
-**Commercial Drones:**
-- AgriScan 200 (agriculture/crop surveying, $3,500)
-- SurveyHawk X1 (mapping/surveying, $5,000)
-
-**Accessories & Components:**
-- PropGuard Set, FlightPack Battery 6000mAh, DroneLink Controller, VisionCam Gimbal, QuickCharge Hub
+**Accessories:**
+- FlightPack Battery 6000mAh
+- DroneLink Controller
+- VisionCam Gimbal
+- QuickCharge Hub
 
 ### Chat Categories
 - **Support** (30%): Setup help, compatibility questions, warranty claims
@@ -156,25 +153,28 @@ Located at: `~/.config/claude/mcp_config.json`
 
 ### Sample Scenarios
 - Motor bearing failure (SkyVision Pro)
-- Compass calibration for first-time flyers (Scout Mini)
-- Camera quality complaint and return (AeroMax 4K)
+- Compass calibration for first-time flyers (SkyVision Pro)
+- Image quality complaint and return (VisionCam Gimbal)
 - Swollen/fast-draining battery issues (FlightPack Battery)
-- Failed firmware update bricking drone (AgriScan 200)
-- Return-to-Home failure during commercial survey (SurveyHawk X1)
+- Failed firmware update bricking drone (SkyVision Pro)
+- Return-to-Home failure during flight (SkyVision Pro)
 - Lost drone due to signal loss and low RTH altitude (SkyVision Pro)
-- Feature requests: follow-me mode, obstacle avoidance, waypoint missions
-- Positive feedback: flight stability, real estate photography use case
+- Controller connectivity and pairing issues (DroneLink Controller)
+- Feature requests: follow-me mode, obstacle avoidance
+- Positive feedback: flight stability, real estate photography, QuickCharge Hub
+- Battery storage and maintenance tips (FlightPack Battery)
 
 ## Available MCP Tools
 
-1. **get_chat_trends** - Trends over time with filtering
-2. **get_common_issues** - Keyword frequency analysis
-3. **get_product_insights** - Per-product metrics
-4. **get_sentiment_analysis** - Sentiment distribution
-5. **get_resolution_metrics** - Resolution performance
+1. **get_chat_trends** - Trends over time with component filtering
+2. **get_common_issues** - Keyword frequency analysis with component filtering
+3. **get_product_insights** - Per-component metrics for the ecosystem
+4. **get_sentiment_analysis** - Sentiment distribution by component and category
+5. **get_resolution_metrics** - Resolution performance by component
 6. **search_conversations** - Keyword search
 7. **get_customer_history** - Customer interaction history
 8. **execute_custom_query** - Custom SQL (SELECT only)
+9. **get_component_health** - Ecosystem health dashboard
 
 ## Example Insights You Can Get
 
@@ -192,6 +192,7 @@ Located at: `~/.config/claude/mcp_config.json`
 
 ### Customer Intelligence
 - "Show me all conversations about signal loss"
+- "Show me the component health dashboard"
 - "What are customers saying about the SkyVision Pro?"
 - "Which customers have contacted us multiple times?"
 - "What's the feedback on our commercial drones?"
@@ -236,7 +237,7 @@ Located at: `~/.config/claude/mcp_config.json`
          │ (stdio)
          │
 ┌────────▼────────┐
-│   MCP Server    │ (8 Analysis Tools)
+│   MCP Server    │ (9 Analysis Tools)
 │  (TypeScript)   │
 └────────┬────────┘
          │ SQL Queries

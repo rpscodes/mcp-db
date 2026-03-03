@@ -79,7 +79,7 @@ PostgreSQL (localhost:5432, customer_support db)
 |                   MCP SERVER (TypeScript, stdio)                 |
 |                                                                  |
 |  +------------------------------------------------------------+  |
-|  |              Tool Registry (8 Tools)                        |  |
+|  |              Tool Registry (9 Tools)                        |  |
 |  |                                                             |  |
 |  |  +-------------------+  +-------------------+              |  |
 |  |  | get_chat_trends   |  | get_common_issues |              |  |
@@ -110,6 +110,14 @@ PostgreSQL (localhost:5432, customer_support db)
 |  |  | Individual        |  | Ad-hoc SELECT       |            |  |
 |  |  | customer sessions |  | queries (read-only) |            |  |
 |  |  +-------------------+  +---------------------+            |  |
+|  |                                                             |  |
+|  |  +-------------------+                                      |  |
+|  |  | get_component_    |                                      |  |
+|  |  | health            |                                      |  |
+|  |  | Per-component     |                                      |  |
+|  |  | ecosystem health  |                                      |  |
+|  |  | dashboard         |                                      |  |
+|  |  +-------------------+                                      |  |
 |  +------------------------------------------------------------+  |
 |                                                                  |
 |  +------------------------------------------------------------+  |
@@ -133,13 +141,12 @@ PostgreSQL (localhost:5432, customer_support db)
 |  |                      TABLES                                 |  |
 |  |                                                             |  |
 |  |  +------------------+       +--------------------+          |  |
-|  |  | products (10)    |       | customers (15)     |          |  |
+|  |  | products (5)     |       | customers (15)     |          |  |
 |  |  | - id             |       | - id               |          |  |
 |  |  | - name           |       | - name             |          |  |
 |  |  | - category       |       | - email            |          |  |
-|  |  | - price          |       +--------------------+          |  |
-|  |  | - description    |              |                        |  |
-|  |  +------------------+              |                        |  |
+|  |  +------------------+       +--------------------+          |  |
+|  |         |                          |                        |  |
 |  |         |                          |                        |  |
 |  |         |        +-----------------+                        |  |
 |  |         |        |                                          |  |
@@ -228,7 +235,7 @@ PostgreSQL (localhost:5432, customer_support db)
 
 | Table | Rows | Purpose | Key Fields |
 |---|---|---|---|
-| `products` | 10 | Drone catalog (Consumer, Commercial, Accessories) | name, category, price |
+| `products` | 5 | SkyVision Pro ecosystem (Drone + Accessories) | name, category |
 | `customers` | 15 | Customer profiles | name, email |
 | `chat_sessions` | 25 | Support tickets (Jan-Feb 2024) | status, category, priority, satisfaction_rating |
 | `messages` | 100+ | Individual chat messages | sender, content, sentiment |
@@ -239,18 +246,19 @@ PostgreSQL (localhost:5432, customer_support db)
 
 ## Layer 2: MCP Server (`mcp-server/src/index.ts`)
 
-This is the **data access layer**, implementing the [Model Context Protocol](https://modelcontextprotocol.io) with **8 tools**:
+This is the **data access layer**, implementing the [Model Context Protocol](https://modelcontextprotocol.io) with **9 tools**:
 
 | Tool | What It Does |
 |---|---|
-| `get_chat_trends` | Category distribution, daily volume, status breakdown |
-| `get_common_issues` | Keyword frequency analysis from message text |
-| `get_product_insights` | Per-product complaint rates, satisfaction, resolution time |
-| `get_sentiment_analysis` | Sentiment distribution overall and by category |
-| `get_resolution_metrics` | Resolution rates, avg time, satisfaction by category |
+| `get_chat_trends` | Category distribution, daily volume, status breakdown (filterable by component) |
+| `get_common_issues` | Keyword frequency analysis from message text (filterable by component) |
+| `get_product_insights` | Per-component complaint rates, satisfaction, resolution time |
+| `get_sentiment_analysis` | Sentiment distribution overall, by category, and by component |
+| `get_resolution_metrics` | Resolution rates, avg time, satisfaction by category and component |
 | `search_conversations` | Full-text keyword search across messages |
 | `get_customer_history` | Individual customer interaction history |
 | `execute_custom_query` | Arbitrary SELECT queries for ad-hoc analysis |
+| `get_component_health` | Ecosystem health dashboard: per-component issues, satisfaction, resolution time |
 
 **Why MCP instead of a REST API:**
 - **Standardized tool discovery** -- the AI can call `ListTools` to learn what's available, including input schemas and descriptions. No hardcoded API knowledge needed.
@@ -331,7 +339,7 @@ A conversational interface with:
 **User asks:** *"What are the most common drone issues?"*
 
 1. **React** sends `POST /api/chat` with the message
-2. **Express** forwards to GPT-4o with 8 tool definitions
+2. **Express** forwards to GPT-4o with 9 tool definitions
 3. **GPT-4o** decides to call `get_common_issues`
 4. **Express** executes via MCP client -> **MCP Server** queries `messages` table, counts keyword frequencies, filters stop words, aggregates by category
 5. **MCP Server** returns JSON: `{top_keywords: [{word: "battery", count: 12}, ...], issue_categories: [...]}`
