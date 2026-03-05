@@ -6,10 +6,14 @@
 # 1. Start PostgreSQL
 brew services start postgresql@16
 
-# 2. Start the app (backend + frontend)
-cd chat-ui && npm run dev
+#2. Create a .env file under the chat-ui folder and add your LLM API key
+cd chat-ui
+echo "OPENAI_API_KEY=ADD_YOUR_API_KEY_HERE" > .env
 
-# 3. Open in browser
+# 3. Start the app (backend + frontend)
+npm run dev
+
+# 4. Open in browser
 open http://localhost:5173/
 ```
 
@@ -276,7 +280,7 @@ export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 ### MCP Config Not Loading
 Restart your Claude session after making config changes.
 
-## Future Enhancements
+<!-- ## Future Enhancements
 
 - [ ] Real-time data streaming
 - [ ] Dashboard for visualizations
@@ -285,7 +289,7 @@ Restart your Claude session after making config changes.
 - [ ] Machine learning for issue prediction
 - [ ] Multi-language support
 - [ ] Export capabilities (CSV, PDF, Excel)
-- [ ] Email alert system for critical issues
+- [ ] Email alert system for critical issues -->
 
 ## License
 
