@@ -2,22 +2,39 @@
 
 ## Running the Project
 
+### First-Time Setup
+
 ```bash
 # 1. Start PostgreSQL
 brew services start postgresql@16
 
-#2. Create a .env file under the chat-ui folder and add your LLM API key
-cd chat-ui
-echo "OPENAI_API_KEY=ADD_YOUR_API_KEY_HERE" > .env
+# 2. Create the database and load sample data
+createdb customer_support
+psql -d customer_support -f setup_database.sql
 
-# 3. Start the app (backend + frontend)
+# 3. Install dependencies
+cd chat-ui && npm install
+
+# 4. Create a .env file under the chat-ui folder and add your LLM API key
+echo "OPENAI_API_KEY=ADD_YOUR_API_KEY_HERE" > .env
+```
+
+### Start the App
+
+```bash
+# 1. Start PostgreSQL (if not already running)
+brew services start postgresql@16
+
+# 2. Start the app (backend + frontend)
+cd chat-ui
 npm run dev
 
-# 4. Open in browser
+# 3. Open in browser
 open http://localhost:5173/
 ```
 
-To stop:
+### Stop the App
+
 ```bash
 # Ctrl+C in the terminal running npm run dev
 brew services stop postgresql@16
